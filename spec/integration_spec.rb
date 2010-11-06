@@ -8,7 +8,7 @@ describe Async do
   end
 
   it "should let use EM-operations outside EM.run block" do
-    lambda { request.get }.should_not raise_error
+    expect { request.get }.to_not raise_error
   end
 
   it "should not block async operations" do

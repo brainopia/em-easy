@@ -2,6 +2,8 @@ require "fiber"
 require "eventmachine"
 require "em-easy/extensions/kernel"
 
+Fiber = Rubinius::Fiber if defined? Rubinius
+
 module Async
   extend self
   attr_reader :evented_loop
@@ -14,7 +16,7 @@ module Async
     handle_callback = proc do
       object.callback {|*args| next_iteration Fiber.yield(*args) }
     end
-    @evented_loop.resume block: handle_callback, smart: true
+    @evented_loop.resume :block => handle_callback, :smart => true
   end
 
   private
