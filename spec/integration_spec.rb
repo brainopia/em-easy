@@ -11,6 +11,10 @@ describe Async do
     Benchmark.realtime { yield }
   end
 
+  def time_of_couple_serial_requests
+    time { 2.times { wait request.get }}
+  end
+
   it "should let use EM-operations outside EM.run block" do
     expect { request.get }.to_not raise_error
   end
@@ -29,6 +33,24 @@ describe Async do
 
   it "#wait should not block other async operations" do
     batch_duration = time { Array.new(5) { request.get }.map {|it| wait it }}
-    batch_duration.should be < 2 * time { wait request.get }
+    batch_duration.should be < time_of_couple_serial_requests
+  end
+
+  it "should iterate over async enumerable yielding results of async operations" do
+    Array.new(5) { request.get }.async.each do |it|
+      it.response.should include("<!DOCTYPE html>")
+    end
+  end
+
+  it "should iterate over async enumerable via transparent callbacks" do
+    time { Array.new(5) { request.get }.async.map do |it|
+      it.response
+    end }.should be < time_of_couple_serial_requests
+  end
+
+  it "should handle mixed array with non-deferrable and deferrable objects" do
+    result = [request.get, "hey"].async.to_a
+    result[0].should == "hey"
+    result[1].response.should include("<!DOCTYPE html>")
   end
 end

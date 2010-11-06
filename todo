@@ -1,1 +1,0 @@
-next step is urls.async.map { ... } or urls.async(5).reject { ... } if we wanna set specific concurrency
