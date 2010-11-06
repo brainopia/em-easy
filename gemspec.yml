@@ -1,11 +1,9 @@
 name: em-easy
 summary: Asynchronous programming (based on EventMachine) without trouble of callbacks
 description:
-  First, we can notice absence of usual EM.run and EM.stop calls. You don't have to think in such terms anymore.
-  Second, we can notice two new methods: Kernel#wait and Enumerable#async.
-
-  Kernel#wait blocks and returns result of asynchronous operation as soon as it available.
-  Enumerable#async returns Async::Enumerator. You can call any enumerable method on the enumerator and supplied block will be run in asynchronous manner as soon as new callback is fired, until all callbacks are fired execution of you program is blocked.
+  You dont have to think in terms of EM.run and EM.stop anymore.
+  Simple and intuitive api which can be used in synchronous manner without dealing with callbacks.
+  More detailes at project homepage.
 
 authors: brainopia
 email: ravwar@gmail.com
