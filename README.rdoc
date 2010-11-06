@@ -8,5 +8,52 @@ gem install em-easy
 
 In ruby land there is an awesome library for asynchronous stuff it's called EventedMachine.
 But EventMachine lacks the ability to transparently mix with synchronous code, which can be handy in number of situations where you need to have more granular control over flow of your program or if you prefer a more traditional syntax.
-There is a gem called em-synchrony which tries to overcome this problem quite successfully, but em-easy tries to simplify process even further and hopes to get merged into em-synchrony.
+There is a gem called em-synchrony which tries to overcome this problem quite successfully, but em-easy tries to simplify syntax even further.
 
+== Example
+
+  require 'em-easy'
+  require 'em-http' # this is a separate library used in example
+
+  # you can use calls to EM asynchronous methods anywhere in your code
+  # they will be started immediately in background
+  request = EM::HttpRequest.new("http://darberry.ru").get
+  requests = Array.new(10) { EM::HttpRequest.new("http://www.postrank.com").get }
+
+  "..." # you can do anything while asynchronous operations are running in background
+
+  # if we need a result of request we wait for it or get it immediately if it's already finished
+  result = wait request
+
+  # so what do we do if we need results for array of requests?
+  # we can use already mentioned "wait" method
+  results = requests.map {|it| wait it }
+
+  # using wait method, requests are made in background in asynchronous manner, so it will yield a good performance
+  # but blocks of code for every result will be run serially, from the first request till the last
+  # but what if a first request will be a slow one and the rest of requests will be finished much more sooner
+  # in this case if the order of results doesn't matter you can use async method which works for any enumerable
+  # async calls block of code for enumerable method as soon as a new request is finished
+  results = requests.async.map do |result|
+    "..." # some long computations
+  end
+
+  # async returns an enumerator which works with any enumerable method, eg
+  results = requests.async.to_a
+
+First, we can notice absence of usual EM.run and EM.stop calls. You don't have to think in such terms anymore.
+Second, we can notice two new methods: Kernel#wait and Enumerable#async.
+
+Kernel#wait blocks and returns result of asynchronous operation as soon as it available.
+Enumerable#async returns Async::Enumerator. You can call any enumerable method on the enumerator and supplied block will be run in asynchronous manner as soon as new callback is fired, until all callbacks are fired execution of you program is blocked.
+
+== Thanks
+
+Christopher Bertels aka bakkdoor - initial idea as prototype for fancy language
+Mike Perham aka mperham, Ilya Grigorik aka igrigorik - inspiration with awesome evented libraries
+
+== Author
+
+brainopia (ravwar at gmail.com).
+
+I am always happy to chat about anything.
