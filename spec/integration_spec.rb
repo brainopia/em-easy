@@ -19,6 +19,10 @@ describe Async do
     Benchmark.realtime { wait request.get }.should be > 0.05
   end
 
+  it '#wait should return result of async operation' do
+    wait(request.get).response.should include("<!DOCTYPE html>")
+  end
+
   it "#wait should not block other async operations" do
     time_for_one_request = Benchmark.realtime { wait request.get }
     time = Benchmark.realtime { Array.new(5) { request.get }.map {|it| wait it }}
