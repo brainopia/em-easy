@@ -7,16 +7,20 @@ describe Async do
     EM::HttpRequest.new("http://www.postrank.com")
   end
 
+  def time
+    Benchmark.realtime { yield }
+  end
+
   it "should let use EM-operations outside EM.run block" do
     expect { request.get }.to_not raise_error
   end
 
   it "should not block async operations" do
-    Benchmark.realtime { request.get }.should be < 0.01
+    time { request.get }.should be < 0.01
   end
 
   it "#wait should block until async operation returns" do
-    Benchmark.realtime { wait request.get }.should be > 0.05
+    time { wait request.get }.should be > 0.05
   end
 
   it '#wait should return result of async operation' do
@@ -24,8 +28,7 @@ describe Async do
   end
 
   it "#wait should not block other async operations" do
-    time_for_one_request = Benchmark.realtime { wait request.get }
-    time = Benchmark.realtime { Array.new(5) { request.get }.map {|it| wait it }}
-    time.should be < 2*time_for_one_request
+    batch_duration = time { Array.new(5) { request.get }.map {|it| wait it }}
+    batch_duration.should be < 2 * time { wait request.get }
   end
 end
