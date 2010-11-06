@@ -1,0 +1,12 @@
+Easy asynchronous programming.
+
+== Installation
+
+gem install em-easy
+
+== Introduction
+
+In ruby land there is an awesome library for asynchronous stuff it's called EventedMachine.
+But EventMachine lacks the ability to transparently mix with synchronous code, which can be handy in number of situations where you need to have more granular control over flow of your program or if you prefer a more traditional syntax.
+There is a gem called em-synchrony which tries to overcome this problem quite successfully, but em-easy tries to simplify process even further and hopes to get merged into em-synchrony.
+

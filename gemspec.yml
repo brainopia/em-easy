@@ -1,0 +1,9 @@
+name: em-easy
+summary: Asynchronous programming (based on EventMachine) without trouble of callbacks
+
+authors: brainopia
+email: ravwar@gmail.com
+homepage: http://github.com/brainopia/em-easy
+
+dependencies:
+  eventmachine: ~> 0.12.10
