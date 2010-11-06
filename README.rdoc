@@ -50,6 +50,7 @@ Enumerable#async returns Async::Enumerator. You can call any enumerable method o
 == Thanks
 
 Christopher Bertels aka bakkdoor - initial idea as prototype for fancy language
+
 Mike Perham aka mperham, Ilya Grigorik aka igrigorik - inspiration with awesome evented libraries
 
 == Author
